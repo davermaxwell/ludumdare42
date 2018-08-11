@@ -23,11 +23,11 @@ function initialize() {
     ctx = c.getContext("2d");
     
     //Initialize tetrimino variables
-    t = 1 + Math.floor((Math.random()*7));
-    x = 4;
-    y = 18;
-    o = 0;
-    
+    t = 1 + Math.floor((Math.random()*7)); //Determine shape
+    o = 0 + Math.floor((Math.random()*3)); //Determine orientation
+    y = 18;                                //y axis spawn is always the same
+    x = getXValue(t, o);                   //Determine x axis spawn based on shape and orientation
+     
     //Create an empty game state grid
     grid = new Array(20);
     for(i = 0; i < 20; i++) {
@@ -67,7 +67,28 @@ function drawGrid() {
     }
 }
  
- 
+/************************************************
+ * Determines the initial x axis spawn value based
+ * on the shape and orientation
+ */
+function getXValue(t, o) {
+    if(t==1) { //I shape
+        if(o==0) return 1 + Math.floor((Math.random()*6));
+        else if(o==1) return 0 + Math.floor((Math.random()*8));
+        else if(o==2) return 1 + Math.floor((Math.random()*6));
+        else if(o==3) return 0 + Math.floor((Math.random()*9));
+        else return 1 + Math.floor((Math.random()*6));
+    } else if (t==2 || t==3 || t==5|| t==6 || t==7) { //J, L, S, T, or Z shape
+        if(o==0) return 1 + Math.floor((Math.random()*6));
+        else if(o==1) return 0 + Math.floor((Math.random()*8));
+        else if(o==2) return 1 + Math.floor((Math.random()*6));
+        else if(o==3) return 1 + Math.floor((Math.random()*7));
+        else return 1 + Math.floor((Math.random()*6));
+    } else if(t==4) { //O shape
+        return 0 + Math.floor((Math.random()*8));
+    } else return 0 + Math.floor((Math.random()*5)); //Random return value that will work with any shape and orientation
+}
+
 /************************************************
 Draws a block at the specified game coordinate
 x = [0,9]   x-coordinate
@@ -160,7 +181,6 @@ function drawBlock(x, y, t) {
         ctx.fill();
     }
 }
-  
   
 /*************************************************
 Draws a tetrimino at the specified game coordinate
@@ -349,7 +369,7 @@ function drawTetrimino(x,y,t,o,d) {
             valid = valid && setGrid(x,y,c);
             valid = valid && setGrid(x,y-1,c);
             valid = valid && setGrid(x+1,y-1,c);
-        }
+       }
         else if(o == 3) {
             valid = valid && setGrid(x,y+1,c);
             valid = valid && setGrid(x,y,c);
@@ -452,10 +472,10 @@ function gameStep() {
         checkLines();
     
         //Create a new tetrimino 
-        t2 = 1 + Math.floor((Math.random()*7));
-        x2 = 4;
-        y2 = 18;
-        o2 = 0;
+        t2 = 1 + Math.floor((Math.random()*7)); //Determine shape
+        o2 = 0 + Math.floor((Math.random()*3)); //Determine orientation
+        y2 = 18;                                //y axis spawn is always the same
+        x2 = getXValue(t2, o2);                   //Determine x axis spawn based on shape and orientation
         
         //Check if valid
         if(drawTetrimino(x2,y2,t2,o2,-1)) {
@@ -465,7 +485,7 @@ function gameStep() {
             o = o2;
         }
         else {
-            alert("Game Over");
+            alert("Game Over" + " t2=" + t2 + " o2=" + o2 + " x2=" + x2);
             initialize();
             return;
         }
